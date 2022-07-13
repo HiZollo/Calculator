@@ -1,0 +1,35 @@
+{
+  "name": "@hizollo/calculator",
+  "version": "0.0.0",
+  "description": "A calculator written in JavaScript.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HiZollo/Calculator.git"
+  },
+  "keywords": [
+    "hizollo",
+    "calculator"
+  ],
+  "author": "HiZollo Organization",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HiZollo/Calculator/issues"
+  },
+  "homepage": "https://github.com/HiZollo/Calculator#readme",
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}
