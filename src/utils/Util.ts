@@ -1,6 +1,5 @@
-import { BinaryExpression, binaryOperator, BinaryOperator, Comma, ConstantExpression, constantKeyword, ConstantKeyword, Expression, FunctionExpression, functionKeyword, FunctionKeyword, parenthesis, Parenthesis, Token, TokenType, UnaryExpression, unaryOperator, UnaryOperator } from "../types";
+import { BinaryExpression, binaryOperator, BinaryOperator, Comma, ConstantExpression, constantKeyword, ConstantKeyword, Expression, FunctionExpression, functionKeyword, FunctionKeyword, Parenthesis, Token, TokenType, UnaryExpression, unaryOperator, UnaryOperator } from "../types";
 
-const ParenthesisKeys: Set<string> = new Set(parenthesis);
 const UnaryOperatorKeys: Set<string> = new Set(unaryOperator);
 const BinaryOperatorKeys: Set<string> = new Set(binaryOperator);
 const ConstantKeywordKeys: Set<string> = new Set(constantKeyword);
@@ -11,9 +10,18 @@ export class Util {
     return opr.type === TokenType.Comma;
   }
 
-  static isParenthesis(opr: Token): opr is Parenthesis {
-    return ParenthesisKeys.has(opr.value);
+
+  static isOpenParenthesis(opr: Token): opr is Parenthesis {
+    return opr.value === '(';
   }
+
+  static isCloseParenthesis(opr: Token): opr is Parenthesis {
+    return opr.value === ')';
+  }
+  static isParenthesis(opr: Token): opr is Parenthesis {
+    return opr.type === TokenType.Parenthesis;
+  }
+
 
   static isUnaryOperator(opr: Token): opr is UnaryOperator {
     return UnaryOperatorKeys.has(opr.value);
@@ -21,6 +29,15 @@ export class Util {
 
   static isBinaryOperator(opr: Token): opr is BinaryOperator {
     return BinaryOperatorKeys.has(opr.value);
+  }
+
+  static isOperator(opr: Token): opr is BinaryOperator | UnaryOperator {
+    return opr.type === TokenType.Operator;
+  }
+
+
+  static isNumber(opr: Token): boolean {
+    return opr.type === TokenType.Number;
   }
 
   static isConstantKeyword(opr: Token): opr is ConstantKeyword {
@@ -31,9 +48,6 @@ export class Util {
     return FunctionKeywordKeys.has(opr.value);
   }
 
-  static isOperator(opr: Token): opr is BinaryOperator | UnaryOperator {
-    return opr.type === TokenType.Operator;
-  }
 
   static isUnaryExpression(exp: Expression): exp is UnaryExpression {
     if (typeof exp === 'number') return false;
