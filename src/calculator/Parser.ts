@@ -48,10 +48,10 @@ export class Parser {
     if (current.done) throw new Error('Nothing to parse');
 
     let exp: Expression | null = 
-      this.parseParenthesis(current.value) ||
-      this.parseNumber(current.value) ||
-      this.parseConstant(current.value) ||
-      this.parseFunction(current.value) ||
+      this.parseParenthesis(current.value) ??
+      this.parseNumber(current.value) ??
+      this.parseConstant(current.value) ??
+      this.parseFunction(current.value) ??
       this.parseUnaryOperator(current.value);
     if (exp === null) throw new Error(`Invalid token ${current.value.value}`);
 
