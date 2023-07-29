@@ -119,7 +119,7 @@ export class Parser {
   /**
    * 往下解析函數表達式
    * 
-   * `<函數表達式>` = `<函數關鍵字>` `<左括號>` `<參數表達式>` `<右括號>`
+   * `<函數表達式>` = `<函數關鍵字>` `<左括號>` `[參數表達式]` `<右括號>`
    */
   private parseFunction(token: Token): FunctionExpression | null {
     // 函數關鍵字
@@ -131,6 +131,13 @@ export class Parser {
     if (!current.done && !Util.isOpenParenthesis(current.value)) throw new Error('Expecting parenthesis');
     this.conveyor.next();
     
+    // 如果是右括號，代表沒有參數
+    current = this.conveyor.peek();
+    if (!current.done && Util.isCloseParenthesis(current.value)) {
+      this.conveyor.next();
+      return { f: token.value, a: [] };
+    }
+
     // 參數表達式
     const funcArgs = this.parseArguments();
     
