@@ -12,6 +12,10 @@ export class Conveyor<T> {
     this.done = this.length <= 0;
   }
 
+  get position() {
+    return this.index;
+  }
+
   public add(arr: T[]): void {
     this.arr = this.arr.concat(arr);
     this.length += arr.length;

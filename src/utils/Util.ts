@@ -1,4 +1,4 @@
-import { BinaryExpression, binaryOperator, BinaryOperator, Comma, ConstantExpression, constantKeyword, ConstantKeyword, Expression, FunctionExpression, functionKeyword, FunctionKeyword, Parenthesis, Token, TokenType, UnaryExpression, unaryOperator, UnaryOperator } from "../types";
+import { BinaryExpression, binaryOperator, BinaryOperator, Comma, ConstantExpression, constantKeyword, ConstantKeyword, Expression, FunctionExpression, functionKeyword, FunctionKeyword, NumberExpression, Parenthesis, Token, TokenType, UnaryExpression, unaryOperator, UnaryOperator } from "../types";
 
 const UnaryOperatorKeys: Set<string> = new Set(unaryOperator);
 const BinaryOperatorKeys: Set<string> = new Set(binaryOperator);
@@ -48,6 +48,10 @@ export class Util {
     return FunctionKeywordKeys.has(opr.value);
   }
 
+
+  static isNumberExpression(exp: Expression): exp is NumberExpression {
+    return 'v' in exp && !('o' in exp);
+  }
 
   static isUnaryExpression(exp: Expression): exp is UnaryExpression {
     if (typeof exp === 'number') return false;

@@ -1,4 +1,5 @@
-import { BinaryExpression, ConstantExpression, ConstantKeywordKey, Expression, FunctionExpression, FunctionKeywordKey, UnaryExpression } from "../types";
+import { CalcError, ErrorCodes } from "../errors";
+import { BinaryExpression, ConstantExpression, Expression, FunctionExpression, UnaryExpression } from "../types";
 import { Util } from "../utils";
 
 export class Evaluator {
@@ -6,7 +7,7 @@ export class Evaluator {
 
 
   constructor() {
-    this.exp = 0;
+    this.exp = { v: 0, p: -1 };
   }
 
   public evaluate(exp: Expression) {
@@ -16,8 +17,8 @@ export class Evaluator {
 
   
   private eval(exp: Expression): number {
-    if (typeof exp === 'number') {
-      return exp;
+    if (Util.isNumberExpression(exp)) {
+      return exp.v;
     }
     if (Util.isUnaryExpression(exp)) {
       return this.evalUnary(exp);
@@ -73,21 +74,21 @@ export class Evaluator {
   }
 
   private evalConstant(exp: ConstantExpression): number {
-    return Evaluator.constantTrans(exp.c);
+    return Evaluator.constantTrans(exp);
   }
 
   private evalFunction(exp: FunctionExpression): number {
-    const func = Evaluator.functionTrans(exp.f);
+    const func = Evaluator.functionTrans(exp);
     return func(...exp.a.map(a => this.eval(a)));
   }
 
-  private static constantTrans(con: ConstantKeywordKey): number {
-    if (con in Math) return Math[con];
-    throw new Error('Invalid constant');
+  private static constantTrans(con: ConstantExpression): number {
+    if (con.c in Math) return Math[con.c];
+    throw new CalcError(con.p, ErrorCodes.InvalidConstant, con.c);
   }
 
-  private static functionTrans(func: FunctionKeywordKey): ((...a: number[]) => number) {
-    if (func in Math) return Math[func];
-    throw new Error('Invalid function');
+  private static functionTrans(func: FunctionExpression): ((...a: number[]) => number) {
+    if (func.f in Math) return Math[func.f];
+    throw new CalcError(func.p, ErrorCodes.InvalidConstant, func.f);
   }
 }

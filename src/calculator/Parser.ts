@@ -1,6 +1,7 @@
 import { Conveyor, Stack } from "./";
-import { BinaryOperator, ConstantExpression, Expression, FunctionExpression, Token, TokenType, UnaryExpression } from "../types";
+import { BinaryOperator, ConstantExpression, Expression, FunctionExpression, NumberExpression, Token, TokenType, UnaryExpression } from "../types";
 import { Util } from "../utils";
+import { CalcError, ErrorCodes } from "../errors";
 
 export class Parser {
   /** 用來儲存 lexer 解析後的單詞 */
@@ -26,10 +27,15 @@ export class Parser {
     const result = this.parseExpression();
 
     // 在語法分析結束後，stack 不應留下任何物品
-    if (this.expressions.size || this.operators.size) throw new Error('Invalid end');
+    if (this.expressions.size || this.operators.size) {
+      throw new CalcError(-1, ErrorCodes.NonEmptyStack);
+    };
 
     // 在語法分析結束後，儲存單詞的容器不應留下任何物品
-    if (!this.conveyor.peek().done) throw new Error('Extra tokens at tail');
+    const trailing = this.conveyor.peek();
+    if (!trailing.done) {
+      throw new CalcError(trailing.value.position, ErrorCodes.ExtraTrailingTokens);
+    }
 
     return result;
   }
@@ -45,7 +51,9 @@ export class Parser {
   /** 遞迴地解析語法 */
   private parseExpression(): Expression {
     let current = this.conveyor.peek();
-    if (current.done) throw new Error('Nothing to parse');
+    if (current.done) {
+      throw new CalcError(0, ErrorCodes.NothingToParse);
+    }
 
     let exp: Expression | null = 
       this.parseParenthesis(current.value) ??
@@ -53,7 +61,9 @@ export class Parser {
       this.parseConstant(current.value) ??
       this.parseFunction(current.value) ??
       this.parseUnaryOperator(current.value);
-    if (exp === null) throw new Error(`Invalid token ${current.value.value}`);
+    if (exp === null) {
+      throw new CalcError(current.value.position, ErrorCodes.InvalidToken, current.value.value);
+    }
 
     // 二元運算
     current = this.conveyor.peek();
@@ -61,7 +71,7 @@ export class Parser {
       const size = this.operators.size;
       this.expressions.push(exp);
 
-      const opr: BinaryOperator = { type: TokenType.BinaryOperator, value: current.value.value };
+      const opr: BinaryOperator = { type: TokenType.BinaryOperator, value: current.value.value, position:current.value.position };
       this.operators.push(opr);
       this.clearStack(opr);
       this.conveyor.next();
@@ -70,7 +80,9 @@ export class Parser {
       this.clearStack(size);
 
       const temp = this.expressions.pop();
-      if (!temp) throw new Error('Invalid expression');
+      if (!temp) {
+        throw new CalcError(-1, ErrorCodes.EmptyExpressionStack);
+      }
       exp = temp;
     }
     return exp;
@@ -91,21 +103,25 @@ export class Parser {
     
     // 右括號
     const current = this.conveyor.peek();
-    if (!current.done && !Util.isCloseParenthesis(current.value)) throw new Error('Parenthesis not closed');
+    if (!current.done && !Util.isCloseParenthesis(current.value)) {
+      throw new CalcError(current.value.position, ErrorCodes.MissingCloseParenthesis);
+    }
     this.conveyor.next();
 
     return exp;
   }
 
   /** 往下解析數字 */
-  private parseNumber(token: Token): number | null {
+  private parseNumber(token: Token): NumberExpression | null {
     if (!Util.isNumber(token)) return null;
 
     const num = +token.value;
-    if (isNaN(num)) throw new Error('Not a number');
+    if (isNaN(num)) {
+      throw new CalcError(token.position, ErrorCodes.NotANumber, token.value);
+    }
     this.conveyor.next();
 
-    return num;
+    return { v: num, p: token.position };
   }
 
   /** 往下解析常數 */
@@ -113,7 +129,7 @@ export class Parser {
     if (!Util.isConstantKeyword(token)) return null;
 
     this.conveyor.next();
-    return { c: token.value };
+    return { c: token.value, p: token.position };
   }
 
   /**
@@ -128,14 +144,16 @@ export class Parser {
     
     // 左括號
     let current = this.conveyor.peek();
-    if (!current.done && !Util.isOpenParenthesis(current.value)) throw new Error('Expecting parenthesis');
+    if (!current.done && !Util.isOpenParenthesis(current.value)) {
+      throw new CalcError(current.value.position, ErrorCodes.MissingOpenParenthesis);
+    }
     this.conveyor.next();
     
     // 如果是右括號，代表沒有參數
     current = this.conveyor.peek();
     if (!current.done && Util.isCloseParenthesis(current.value)) {
       this.conveyor.next();
-      return { f: token.value, a: [] };
+      return { f: token.value, a: [], p: token.position };
     }
 
     // 參數表達式
@@ -143,10 +161,12 @@ export class Parser {
     
     // 右括號
     current = this.conveyor.peek();
-    if (!current.done && !Util.isCloseParenthesis(current.value)) throw new Error('Parenthesis not closed');
+    if (!current.done && !Util.isCloseParenthesis(current.value)) {
+      throw new CalcError(current.value.position, ErrorCodes.MissingCloseParenthesis);
+    }
     this.conveyor.next();
 
-    return { f: token.value, a: funcArgs };
+    return { f: token.value, a: funcArgs, p: token.position };
   }
 
   /** 往下解析單元運算表達式 */
@@ -154,7 +174,7 @@ export class Parser {
     if (!Util.isUnaryOperator(token)) return null;
 
     this.conveyor.next();
-    return { o: token, v: this.parseExpression() };
+    return { o: token, v: this.parseExpression(), p: token.position };
   }
 
   /**
@@ -188,11 +208,15 @@ export class Parser {
       const rExp = this.expressions.pop();
       const lExp = this.expressions.pop();
       this.operators.pop();
-      if (!lExp || !rExp) throw new Error('Invalid expressions');
+      if (!lExp || !rExp) {
+        throw new CalcError(-1, ErrorCodes.EmptyExpressionStack);
+      }
+
       this.expressions.push({
         l: lExp, 
         o: current, 
-        r: rExp
+        r: rExp, 
+        p: lExp.p
       });
       current = this.operators.peek();
     }

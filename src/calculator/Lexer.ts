@@ -1,4 +1,5 @@
 import { Conveyor } from "./";
+import { CalcError, ErrorCodes } from "../errors";
 import { binaryOperator, Token, TokenType, unaryOperator } from "../types";
 
 const operators = [...unaryOperator, ...binaryOperator];
@@ -33,7 +34,10 @@ export class Lexer {
         this.lexParenthesis(char) ||
         this.lexNumber(char) ||
         this.lexKeyword(char);
-      if (!success) throw new Error(`Invalid token ${char}`);
+      
+      if (!success) {
+        throw new CalcError(this.conveyor.position, ErrorCodes.InvalidCharacter, char);
+      }
       current = this.conveyor.peek();
     }
 
@@ -61,7 +65,7 @@ export class Lexer {
   private lexComma(char: string): boolean {
     if (!Lexer.isComma(char)) return false;
 
-    this.tokens.push({ type: TokenType.Comma, value: ',' });
+    this.tokens.push({ type: TokenType.Comma, value: ',', position: this.conveyor.position });
     this.conveyor.next();
     return true;
   }
@@ -82,8 +86,10 @@ export class Lexer {
       next = this.conveyor.peek();
     }
 
-    if (!operators.some(o => o === operator)) throw new Error('Invalid operator');
-    this.tokens.push({ type: TokenType.Operator, value: operator });
+    if (!operators.some(o => o === operator)) {
+      throw new CalcError(this.conveyor.position, ErrorCodes.InvalidOperator, operator);
+    }
+    this.tokens.push({ type: TokenType.Operator, value: operator, position: this.conveyor.position });
     return true;
   }
 
@@ -91,7 +97,7 @@ export class Lexer {
   private lexParenthesis(char: string): boolean {
     if (!Lexer.isParenthesis(char)) return false;
 
-    this.tokens.push({ type: TokenType.Parenthesis, value: this.conveyor.peek().value });
+    this.tokens.push({ type: TokenType.Parenthesis, value: this.conveyor.peek().value, position: this.conveyor.position });
     this.conveyor.next();
     return true;
   }
@@ -105,13 +111,16 @@ export class Lexer {
     while (!next.done) {
       const temp = next.value;
       if (!Lexer.isNumber(temp)) break;
-      if (temp === '.' && pointCount++) throw new Error('Two decimal points in a number.');
+      if (temp === '.' && pointCount++) {
+        throw new CalcError(this.conveyor.position, ErrorCodes.TwoDecimalPoints);
+      }
+
       number += temp;
       this.conveyor.next();
       next = this.conveyor.peek();
     }
 
-    this.tokens.push({ type: TokenType.Number, value: number });
+    this.tokens.push({ type: TokenType.Number, value: number, position: this.conveyor.position });
     return true;
   }
 
@@ -129,7 +138,7 @@ export class Lexer {
       next = this.conveyor.peek();
     }
 
-    this.tokens.push({ type: TokenType.Keyword, value: keyword });
+    this.tokens.push({ type: TokenType.Keyword, value: keyword, position: this.conveyor.position });
     return true;
   }
 

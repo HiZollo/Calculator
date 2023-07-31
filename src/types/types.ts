@@ -12,19 +12,20 @@ export type BinaryOperatorKey = (typeof binaryOperator)[number];
 export type ConstantKeywordKey = (typeof constantKeyword)[number];
 export type FunctionKeywordKey = (typeof functionKeyword)[number];
 
-export type Token = { type: TokenType, value: string };
+export type Token = { type: TokenType, value: string, position: number };
 
-export type Comma = { type: TokenType.Comma, value: ',' };
-export type Parenthesis = { type: TokenType.Parenthesis, value: ParenthesisKey };
-export type UnaryOperator = { type: TokenType.UnaryOperator, value: UnaryOperatorKey };
-export type BinaryOperator = { type: TokenType.BinaryOperator, value: BinaryOperatorKey };
+export type Comma = { type: TokenType.Comma, value: ',', position: number };
+export type Parenthesis = { type: TokenType.Parenthesis, value: ParenthesisKey, position: number };
+export type UnaryOperator = { type: TokenType.UnaryOperator, value: UnaryOperatorKey, position: number };
+export type BinaryOperator = { type: TokenType.BinaryOperator, value: BinaryOperatorKey, position: number };
 export type Operator = UnaryOperator | BinaryOperator;
-export type ConstantKeyword = { type: TokenType.ConstantKeyword, value: ConstantKeywordKey };
-export type FunctionKeyword = { type: TokenType.FunctionKeyword, value: FunctionKeywordKey };
+export type ConstantKeyword = { type: TokenType.ConstantKeyword, value: ConstantKeywordKey, position: number };
+export type FunctionKeyword = { type: TokenType.FunctionKeyword, value: FunctionKeywordKey, position: number };
 export type Keyword = ConstantKeyword | FunctionKeyword;
 
-export type UnaryExpression = { o: UnaryOperator, v: Expression };
-export type BinaryExpression = { l: Expression, o: BinaryOperator, r: Expression };
-export type ConstantExpression = { c: ConstantKeywordKey };
-export type FunctionExpression = { f: FunctionKeywordKey, a: Expression[] };
-export type Expression = number | UnaryExpression | BinaryExpression | ConstantExpression | FunctionExpression;
+export type NumberExpression = { v: number, p: number }
+export type UnaryExpression = { o: UnaryOperator, v: Expression, p: number };
+export type BinaryExpression = { l: Expression, o: BinaryOperator, r: Expression, p: number };
+export type ConstantExpression = { c: ConstantKeywordKey, p: number };
+export type FunctionExpression = { f: FunctionKeywordKey, a: Expression[], p: number };
+export type Expression = NumberExpression | UnaryExpression | BinaryExpression | ConstantExpression | FunctionExpression;
