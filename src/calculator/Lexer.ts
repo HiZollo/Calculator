@@ -77,6 +77,7 @@ export class Lexer {
     let candidates = operators;
     let next = this.conveyor.peek();
     let operator = '';
+    let position = this.conveyor.position;
     while (!next.done) {
       const temp = operator + next.value;
       candidates = candidates.filter(o => o.startsWith(temp));
@@ -89,7 +90,7 @@ export class Lexer {
     if (!operators.some(o => o === operator)) {
       throw new CalcError(this.conveyor.position, ErrorCodes.InvalidOperator, operator);
     }
-    this.tokens.push({ type: TokenType.Operator, value: operator, position: this.conveyor.position });
+    this.tokens.push({ type: TokenType.Operator, value: operator, position: position });
     return true;
   }
 
@@ -108,6 +109,7 @@ export class Lexer {
 
     let number = '', pointCount = 0;
     let next = this.conveyor.peek();
+    let position = this.conveyor.position;
     while (!next.done) {
       const temp = next.value;
       if (!Lexer.isNumber(temp)) break;
@@ -120,7 +122,7 @@ export class Lexer {
       next = this.conveyor.peek();
     }
 
-    this.tokens.push({ type: TokenType.Number, value: number, position: this.conveyor.position });
+    this.tokens.push({ type: TokenType.Number, value: number, position });
     return true;
   }
 
@@ -130,6 +132,7 @@ export class Lexer {
 
     let keyword = '';
     let next = this.conveyor.peek();
+    let position = this.conveyor.position;
     while (!next.done) {
       const temp = next.value;
       if (!Lexer.isKeyword(temp)) break;
@@ -138,7 +141,7 @@ export class Lexer {
       next = this.conveyor.peek();
     }
 
-    this.tokens.push({ type: TokenType.Keyword, value: keyword, position: this.conveyor.position });
+    this.tokens.push({ type: TokenType.Keyword, value: keyword, position });
     return true;
   }
 
