@@ -9,9 +9,9 @@ export const Messages = {
 
   // Parser
   [ErrorCodes.ExtraTrailingTokens]: () => `There should not be any extra tokens in the end.`, 
-  [ErrorCodes.InvalidToken]: (token: string) => `Invalid Character ${token}.`, 
+  [ErrorCodes.InvalidToken]: (token: string) => `Invalid Token ${token}.`, 
   [ErrorCodes.MissingOpenParenthesis]: () => `Missing open parenthesis.`, 
-  [ErrorCodes.MissingCloseParenthesis]: () => `Missing chosed parenthesis.`, 
+  [ErrorCodes.MissingCloseParenthesis]: () => `Missing close parenthesis.`, 
   [ErrorCodes.NotANumber]: (token: string) => `${token} cannot be parsed as a number.`, 
   [ErrorCodes.NothingToParse]: () => `There is nothing to parse.`, 
 
