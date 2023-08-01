@@ -1,12 +1,10 @@
 export class Conveyor<T> {
   private arr: T[];
-  private length: number;
   private index: number;
   
 
   constructor() {
     this.arr = [];
-    this.length = this.arr.length;
     this.index = 0;
   }
 
@@ -16,7 +14,6 @@ export class Conveyor<T> {
 
   public add(arr: T[]): void {
     this.arr = this.arr.concat(arr);
-    this.length += arr.length;
   }
 
   public peek(): { value: T, done: false } | { value: undefined, done: true } {
