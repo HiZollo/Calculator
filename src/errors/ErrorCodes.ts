@@ -13,8 +13,6 @@ export enum ErrorCodes {
   NothingToParse          = 'NothingToParse', 
 
   // Evaluator
-  InvalidConstant         = 'InvalidConstant', 
-  InvalidFunctionName     = 'InvalidFunctionName', 
 
   // Implementation
   EmptyExpressionStack    = 'EmptyExpressionStack', 

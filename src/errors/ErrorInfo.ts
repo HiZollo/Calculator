@@ -16,8 +16,6 @@ export const Messages = {
   [ErrorCodes.NothingToParse]: () => `There is nothing to parse.`, 
 
   // Evaluator
-  [ErrorCodes.InvalidConstant]: (constant: string) => `Invalid Constant ${constant}.`, 
-  [ErrorCodes.InvalidFunctionName]: (name: string) => `Invalid Function Name ${name}.`, 
 
   // Implementation
   [ErrorCodes.EmptyExpressionStack]: () => `The expression stack is empty. This is probably caused by a bug in calculator itself.`, 
@@ -39,8 +37,6 @@ export const Types = {
     [ErrorCodes.NothingToParse]: ErrorTypes.ParserError, 
   
     // Evaluator
-    [ErrorCodes.InvalidConstant]: ErrorTypes.EvaluatorError, 
-    [ErrorCodes.InvalidFunctionName]: ErrorTypes.EvaluatorError, 
 
     // Implementation
     [ErrorCodes.EmptyExpressionStack]: ErrorTypes.ImplementationError, 

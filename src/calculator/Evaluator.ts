@@ -1,6 +1,7 @@
-import { CalcError, ErrorCodes } from "../errors";
 import { BinaryExpression, ConstantExpression, Expression, FunctionExpression, UnaryExpression } from "../types";
 import { Util } from "../utils";
+import { constants } from "../utils/constants";
+import { functions } from "../utils/functions";
 
 export class Evaluator {
   private exp: Expression;
@@ -83,12 +84,10 @@ export class Evaluator {
   }
 
   private static constantTrans(con: ConstantExpression): number {
-    if (con.c in Math) return Math[con.c];
-    throw new CalcError(con.p, ErrorCodes.InvalidConstant, con.c);
+    return constants[con.c];
   }
 
   private static functionTrans(func: FunctionExpression): ((...a: number[]) => number) {
-    if (func.f in Math) return Math[func.f];
-    throw new CalcError(func.p, ErrorCodes.InvalidConstant, func.f);
+    return functions[func.f];
   }
 }

@@ -141,7 +141,7 @@ export class Lexer {
       next = this.conveyor.peek();
     }
 
-    this.tokens.push({ type: TokenType.Keyword, value: keyword, position });
+    this.tokens.push({ type: TokenType.Keyword, value: keyword.toLowerCase(), position });
     return true;
   }
 
