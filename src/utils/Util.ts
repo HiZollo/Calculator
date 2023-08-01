@@ -41,11 +41,19 @@ export class Util {
   }
 
   static isConstantKeyword(opr: Token): opr is ConstantKeyword {
-    return ConstantKeywordKeys.has(opr.value);
+    if (ConstantKeywordKeys.has(opr.value.toLowerCase())) {
+      opr.value = opr.value.toLowerCase();
+      return true;
+    }
+    return false;
   }
 
   static isFunctionKeyword(opr: Token): opr is FunctionKeyword {
-    return FunctionKeywordKeys.has(opr.value);
+    if (FunctionKeywordKeys.has(opr.value.toLowerCase())) {
+      opr.value = opr.value.toLowerCase();
+      return true;
+    }
+    return false;
   }
 
 
