@@ -41,4 +41,4 @@ export const Types = {
     // Implementation
     [ErrorCodes.EmptyExpressionStack]: ErrorTypes.ImplementationError, 
     [ErrorCodes.NonEmptyStack]: ErrorTypes.ImplementationError, 
-}
+} as const;
