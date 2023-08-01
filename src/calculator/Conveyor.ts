@@ -2,14 +2,12 @@ export class Conveyor<T> {
   private arr: T[];
   private length: number;
   private index: number;
-  private done: boolean;
   
 
   constructor() {
     this.arr = [];
     this.length = this.arr.length;
     this.index = 0;
-    this.done = this.length <= 0;
   }
 
   get position() {
@@ -19,18 +17,20 @@ export class Conveyor<T> {
   public add(arr: T[]): void {
     this.arr = this.arr.concat(arr);
     this.length += arr.length;
-    this.done = this.index >= this.length;
   }
 
-  public peek(): { value: T, done: boolean } {
-    return { value: this.arr[this.index], done: this.done };
+  public peek(): { value: T, done: false } | { value: undefined, done: true } {
+    return this.arr[this.index] != null ? 
+      { value: this.arr[this.index], done: false } :
+      { value: undefined, done: true };
   }
 
-  public next(length = 0): { value: T, done: boolean } {
+  public next(length = 0): { value: T, done: false } | { value: undefined, done: true } {
     this.index += length;
     const next = this.peek().value;
     this.index += 1;
-    this.done = this.index >= this.length;
-    return { value: next, done: this.done };
+    return next != null ? 
+      { value: next, done: false } :
+      { value: undefined, done: true };
   }
 }

@@ -52,7 +52,7 @@ export class Parser {
   private parseExpression(): Expression {
     let current = this.conveyor.peek();
     if (current.done) {
-      throw new CalcError(0, ErrorCodes.NothingToParse);
+      throw new CalcError(-1, ErrorCodes.NothingToParse);
     }
 
     let exp: Expression | null = 
@@ -103,8 +103,8 @@ export class Parser {
     
     // 右括號
     const current = this.conveyor.peek();
-    if (!current.done && !Util.isCloseParenthesis(current.value)) {
-      throw new CalcError(current.value.position, ErrorCodes.MissingCloseParenthesis);
+    if (current.done || !Util.isCloseParenthesis(current.value)) {
+      throw new CalcError(current.value?.position ?? -1, ErrorCodes.MissingCloseParenthesis);
     }
     this.conveyor.next();
 
@@ -144,8 +144,8 @@ export class Parser {
     
     // 左括號
     let current = this.conveyor.peek();
-    if (!current.done && !Util.isOpenParenthesis(current.value)) {
-      throw new CalcError(current.value.position, ErrorCodes.MissingOpenParenthesis);
+    if (current.done || !Util.isOpenParenthesis(current.value)) {
+      throw new CalcError(current.value?.position ?? -1, ErrorCodes.MissingOpenParenthesis);
     }
     this.conveyor.next();
     
@@ -161,8 +161,8 @@ export class Parser {
     
     // 右括號
     current = this.conveyor.peek();
-    if (!current.done && !Util.isCloseParenthesis(current.value)) {
-      throw new CalcError(current.value.position, ErrorCodes.MissingCloseParenthesis);
+    if (current.done || !Util.isCloseParenthesis(current.value)) {
+      throw new CalcError(current.value?.position ?? -1, ErrorCodes.MissingCloseParenthesis);
     }
     this.conveyor.next();
 

@@ -34,7 +34,7 @@ export class Lexer {
         this.lexParenthesis(char) ||
         this.lexNumber(char) ||
         this.lexKeyword(char);
-      
+
       if (!success) {
         throw new CalcError(this.conveyor.position, ErrorCodes.InvalidCharacter, char);
       }
@@ -97,7 +97,7 @@ export class Lexer {
   private lexParenthesis(char: string): boolean {
     if (!Lexer.isParenthesis(char)) return false;
 
-    this.tokens.push({ type: TokenType.Parenthesis, value: this.conveyor.peek().value, position: this.conveyor.position });
+    this.tokens.push({ type: TokenType.Parenthesis, value: char, position: this.conveyor.position });
     this.conveyor.next();
     return true;
   }
