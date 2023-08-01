@@ -1,4 +1,6 @@
-export const constants = {
+import { ConstantKeywordKey } from "../types";
+
+export const constants: { [key in ConstantKeywordKey]: number } = {
   // Math constants
   e: Math.E, 
   ln10: Math.LN10, 

@@ -4,7 +4,15 @@ export const parenthesis = ['(', ')'] as const;
 export const unaryOperator = ['+', '-', '~'] as const;
 export const binaryOperator = ['**', '*', '/', '%', '+', '-', '<<', '>>', '>>>', '&', '^', '|'] as const;
 export const constantKeyword = ['e', 'ln10', 'ln2', 'log10e', 'log2e', 'pi', 'sqrt1_2', 'sqrt2'] as const;
-export const functionKeyword = ['abs', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh', 'cbrt', 'ceil', 'clz32', 'cos', 'cosh', 'exp', 'expm1', 'floor', 'fround', 'hypot', 'imul', 'log', 'log10', 'log1p', 'log2', 'max', 'min', 'pow', 'random', 'round', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'trunc'] as const;
+export const functionKeyword = [
+  'abs', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh', 'cbrt', 'ceil', 'clz32', 'cos', 
+  'cosh', 'exp', 'expm1', 'floor', 'fround', 'hypot', 'imul', 'log', 'log10', 'log1p', 'log2', 'max', 
+  'min', 'pow', 'random', 'round', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'trunc', 
+
+  'sum', 'sqsum', 'avg', 'stdev', 
+
+  'fact', 'prod'
+] as const;
 
 export type ParenthesisKey = (typeof parenthesis)[number];
 export type UnaryOperatorKey = (typeof unaryOperator)[number];

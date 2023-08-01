@@ -1,4 +1,6 @@
-export const functions = {
+import { FunctionKeywordKey } from "../types";
+
+export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => number } = {
   // Math functions
   abs: Math.abs, 
   acos: Math.acos, 
@@ -35,4 +37,29 @@ export const functions = {
   tan: Math.tan, 
   tanh: Math.tanh, 
   trunc: Math.trunc, 
+
+  // statistics
+  sum(...args: number[]): number {
+    return args.reduce((a, c) => a + c, 0);
+  }, 
+  sqsum(...args: number[]): number {
+    return args.reduce((a, c) => a + c ** 2, 0);
+  }, 
+  avg(...args: number[]): number {
+    return functions.sum(...args) / args.length;
+  }, 
+  stdev(...args: number[]): number {
+    return functions.sqrt(functions.sqsum(...args) / args.length - functions.avg(...args) ** 2);
+  }, 
+
+  // misc
+  prod(...args: number[]): number {
+    return args.reduce((a, c) => a * c, 1);
+  }, 
+  fact(n: number): number {
+    if (!Number.isInteger(n) || n <= 0) return NaN;
+    if (n >= 171) return Infinity;
+    if (n === 1) return 1;
+    return n * functions.fact(n - 1);
+  }, 
 } as const;
