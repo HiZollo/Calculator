@@ -31,7 +31,7 @@ console.log(result); // 7
 
 ## 使用範例
 ```ts
-import { Calculator, CalcError } from "@hizollo/calculator";
+import { Calculator, CalcError, ErrorCodes } from "@hizollo/calculator";
 
 const calculator = new Calculator();
 const formula = 'random thing';
@@ -39,7 +39,8 @@ const formula = 'random thing';
 try {
   const result = calculator.calculate(formula);
   console.log(result);
-} catch (error) {
+} catch (e) {
+  const error = e as CalcError<ErrorCodes>;
   console.log(`${error.message}\nAt: ${error.position}`);
 }
 ```
