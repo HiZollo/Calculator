@@ -52,7 +52,7 @@ export class Parser {
   private parseExpression(): Expression {
     let current = this.conveyor.peek();
     if (current.done) {
-      throw new CalcError(-1, ErrorCodes.NothingToParse);
+      throw new CalcError(-1, ErrorCodes.MissingExpressions);
     }
 
     let exp: Expression | null = 

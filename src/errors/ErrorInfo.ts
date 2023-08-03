@@ -10,10 +10,10 @@ export const Messages = {
   // Parser
   [ErrorCodes.ExtraTrailingTokens]: () => `There should not be any extra tokens in the end.`, 
   [ErrorCodes.InvalidToken]: (token: string) => `Invalid Token ${token}.`, 
-  [ErrorCodes.MissingOpenParenthesis]: () => `Missing open parenthesis.`, 
   [ErrorCodes.MissingCloseParenthesis]: () => `Missing close parenthesis.`, 
+  [ErrorCodes.MissingExpressions]: () => `Missing expressions. Nothing to parse.`, 
+  [ErrorCodes.MissingOpenParenthesis]: () => `Missing open parenthesis.`, 
   [ErrorCodes.NotANumber]: (token: string) => `${token} cannot be parsed as a number.`, 
-  [ErrorCodes.NothingToParse]: () => `There is nothing to parse.`, 
 
   // Evaluator
 
@@ -31,10 +31,10 @@ export const Types = {
     // Parser
     [ErrorCodes.ExtraTrailingTokens]: ErrorTypes.ParserError, 
     [ErrorCodes.InvalidToken]: ErrorTypes.ParserError, 
-    [ErrorCodes.MissingOpenParenthesis]: ErrorTypes.ParserError, 
     [ErrorCodes.MissingCloseParenthesis]: ErrorTypes.ParserError, 
+    [ErrorCodes.MissingExpressions]: ErrorTypes.ParserError, 
+    [ErrorCodes.MissingOpenParenthesis]: ErrorTypes.ParserError, 
     [ErrorCodes.NotANumber]: ErrorTypes.ParserError, 
-    [ErrorCodes.NothingToParse]: ErrorTypes.ParserError, 
   
     // Evaluator
 

@@ -7,10 +7,10 @@ export enum ErrorCodes {
   // Parser
   ExtraTrailingTokens     = 'ExtraTrailingTokens', 
   InvalidToken            = 'InvalidToken', 
-  MissingOpenParenthesis  = 'MissingOpenParenthesis', 
   MissingCloseParenthesis = 'MissingCloseParenthesis', 
+  MissingExpressions      = 'MissingExpressions', 
+  MissingOpenParenthesis  = 'MissingOpenParenthesis', 
   NotANumber              = 'NotANumber', 
-  NothingToParse          = 'NothingToParse', 
 
   // Evaluator
 
