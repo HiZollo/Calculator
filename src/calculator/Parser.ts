@@ -290,7 +290,7 @@ class StackManager {
     if (opr === undefined) return -2;
     switch (opr.value) {
       case '**': return 14;
-      case '*': case '/': case '%': return 13;
+      case '*': case '×': case '/': case '÷': case '%': return 13;
       case '+': case '-': return 12;
       case '<<': case '>>': case '>>>': return 11;
       case '&': return 8;

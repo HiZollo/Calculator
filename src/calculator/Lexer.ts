@@ -1,8 +1,10 @@
 import { Conveyor } from "./";
 import { CalcError, ErrorCodes } from "../errors";
-import { binaryOperator, Token, TokenType, unaryOperator } from "../types";
+import { binaryOperator, constantKeyword, functionKeyword, Token, TokenType, unaryOperator } from "../types";
 
 const operators = [...unaryOperator, ...binaryOperator];
+const operatorChars = new Set([unaryOperator.map(o => o.split('')), binaryOperator.map(o => o.split(''))].flat(2));
+const keywordChars = new Set([constantKeyword.map(o => o.split('')), functionKeyword.map(o => o.split(''))].flat(2));
 
 export class Lexer {
   /** 用來儲存原始資料的結構 */
@@ -155,7 +157,7 @@ export class Lexer {
   }
 
   private static isOperator(char: string): boolean {
-    return /[*/%+\-<>&^|~]/.test(char);
+    return operatorChars.has(char.toLowerCase());
   }
 
   private static isParenthesis(char: string): boolean {
@@ -167,6 +169,6 @@ export class Lexer {
   }
 
   private static isKeyword(char: string): boolean {
-    return /\w/.test(char);
+    return keywordChars.has(char.toLowerCase());
   }
 }

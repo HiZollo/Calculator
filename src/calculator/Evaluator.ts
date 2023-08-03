@@ -48,9 +48,9 @@ export class Evaluator {
     switch (exp.o.value) {
       case '**':
         return this.eval(exp.l) ** this.eval(exp.r);
-      case '*':
+      case '*': case '×':
         return this.eval(exp.l) * this.eval(exp.r);
-      case '/':
+      case '/': case '÷':
         return this.eval(exp.l) / this.eval(exp.r);
       case '%':
         return this.eval(exp.l) % this.eval(exp.r);
@@ -70,8 +70,7 @@ export class Evaluator {
         return this.eval(exp.l) ^ this.eval(exp.r);
       case '|':
         return this.eval(exp.l) | this.eval(exp.r);
-    
-      }
+    }
   }
 
   private evalConstant(exp: ConstantExpression): number {
