@@ -15,6 +15,6 @@ export enum ErrorCodes {
   // Evaluator
 
   // Implementation
-  EmptyExpressionStack    = 'EmptyExpressionStack', 
+  EmptyStack              = 'EmptyStack', 
   NonEmptyStack           = 'NonEmptyStack', 
 }

@@ -18,7 +18,7 @@ export const Messages = {
   // Evaluator
 
   // Implementation
-  [ErrorCodes.EmptyExpressionStack]: () => `The expression stack is empty. This is probably caused by a bug in calculator itself.`, 
+  [ErrorCodes.EmptyStack]: () => `The stack is empty. This is probably caused by a bug in calculator itself.`, 
   [ErrorCodes.NonEmptyStack]: () => `Non-empty stack after parsing. This is probably caused by a bug in calculator itself.`, 
 } as const;
 
@@ -39,6 +39,6 @@ export const Types = {
     // Evaluator
 
     // Implementation
-    [ErrorCodes.EmptyExpressionStack]: ErrorTypes.ImplementationError, 
+    [ErrorCodes.EmptyStack]: ErrorTypes.ImplementationError, 
     [ErrorCodes.NonEmptyStack]: ErrorTypes.ImplementationError, 
 } as const;
