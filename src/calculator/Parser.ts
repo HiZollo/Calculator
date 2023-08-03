@@ -149,9 +149,13 @@ export class Parser {
     }
     this.conveyor.next();
     
-    // 如果是右括號，代表沒有參數
     current = this.conveyor.peek();
-    if (!current.done && Util.isCloseParenthesis(current.value)) {
+    if (current.done) {
+      throw new CalcError(-1, ErrorCodes.MissingCloseParenthesis);
+    }
+
+    // 如果是右括號，代表沒有參數
+    if (Util.isCloseParenthesis(current.value)) {
       this.conveyor.next();
       return { f: token.value, a: [], p: token.position };
     }
