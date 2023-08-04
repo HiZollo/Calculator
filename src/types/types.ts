@@ -11,7 +11,7 @@ export const functionKeyword = [
 
   'sum', 'sqsum', 'avg', 'stdev', 
 
-  'fact', 'prod'
+  'fact', 'gcd', 'irandom', 'lcm', 'prod'
 ] as const;
 
 export type ParenthesisKey = (typeof parenthesis)[number];

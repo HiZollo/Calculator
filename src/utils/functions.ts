@@ -54,13 +54,73 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
   }, 
 
   // misc
-  prod(...args: number[]): number {
-    return args.reduce((a, c) => a * c, 1);
-  }, 
   fact(n: number): number {
     if (!Number.isInteger(n) || n <= 0) return NaN;
     if (n >= 171) return Infinity;
     if (n === 1) return 1;
     return n * functions.fact(n - 1);
   }, 
+  gcd(...args: number[]): number {
+    if (args.length === 0) return NaN;
+    if (args.length === 1) return args[0];
+
+    const numbers = args.map(n => BigInt(Math.floor(Math.abs(n))));
+    let result = _gcd(numbers[0], numbers[1]);
+    for (let i = 2; i < numbers.length; i++) {
+      result = _gcd(result, numbers[i]);
+    }
+    return Number(result);
+  }, 
+  irandom(a: number, b: number): number {
+    a = Math.floor(a);
+    b = Math.floor(b);
+    return Math.floor(Math.random() * (b - a + 1) + a);
+  }, 
+  lcm(...args: number[]): number {
+    if (args.length === 0) return NaN;
+    if (args.length === 1) return args[0];
+
+    const numbers = args.map(n => BigInt(Math.floor(Math.abs(n))));
+    let result = _lcm(numbers[0], numbers[1]);
+    for (let i = 2; i < numbers.length; i++) {
+      result = _lcm(result, numbers[i]);
+    }
+    return Number(result);
+  }, 
+  prod(...args: number[]): number {
+    return args.reduce((a, c) => a * c, 1);
+  }, 
 } as const;
+
+function _gcd(m: bigint, n: bigint): bigint {
+  if (m === 0n && n === 0n) return 0n;
+  if (m === 0n) return n;
+  if (n === 0n) return m;
+
+  let k = 0n;
+  while (!(m & 1n) && !(n & 1n)) {
+    m >>= 1n;
+    n >>= 1n;
+    k++;
+  }
+
+  while (!(m & 1n)) {
+    m >>= 1n;
+  }
+
+  do {
+    while (!(n & 1n)) {
+      n >>= 1n;
+    }
+    if (m > n) {
+      [m, n] = [n, m];
+    }
+    n -= m;
+  } while (n !== 0n);
+
+  return m << k;
+}
+
+function _lcm(m: bigint, n: bigint): bigint {
+  return m * n / _gcd(m, n);
+}
