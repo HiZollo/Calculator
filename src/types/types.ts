@@ -7,7 +7,7 @@ export const constantKeyword = ['e', 'inf', 'infinity', '∞', 'ln10', 'ln2', 'l
 export const functionKeyword = [
   'abs', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh', 'cbrt', 'ceil', 'clz32', 'cos', 
   'cosh', 'exp', 'expm1', 'floor', 'fround', 'hypot', 'imul', 'log', 'log10', 'log1p', 'log2', 'max', 
-  'min', 'pow', 'random', 'round', 'sign', 'sin', 'sinh', 'sqrt', '√', 'tan', 'tanh', 'trunc', 
+  'min', 'pow', 'random', 'round', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'trunc', 
 
   'sum', 'sqsum', 'avg', 'stdev', 
 

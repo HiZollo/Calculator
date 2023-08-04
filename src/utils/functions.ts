@@ -34,7 +34,6 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
   sin: Math.sin, 
   sinh: Math.sinh, 
   sqrt: Math.sqrt, 
-  '√': Math.sqrt, 
   tan: Math.tan, 
   tanh: Math.tanh, 
   trunc: Math.trunc, 
