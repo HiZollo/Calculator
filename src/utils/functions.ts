@@ -28,7 +28,6 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
   max: Math.max, 
   min: Math.min, 
   pow: Math.pow, 
-  random: Math.random, 
   round: Math.round, 
   sign: Math.sign, 
   sin: Math.sin, 
@@ -71,6 +70,9 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
     return Number(result);
   }, 
   irandom(a: number, b: number): number {
+    if (a > b) {
+      [a, b] = [b, a];
+    }
     a = Math.floor(a);
     b = Math.floor(b);
     return Math.floor(Math.random() * (b - a + 1) + a);
@@ -88,6 +90,13 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
   }, 
   prod(...args: number[]): number {
     return args.reduce((a, c) => a * c, 1);
+  }, 
+  random(a?: number, b?: number): number {
+    if (a == null && b == null) return Math.random();
+
+    a = a ?? 0;
+    b = b ?? 0;
+    return Math.random() * (b - a) + a;
   }, 
 } as const;
 
