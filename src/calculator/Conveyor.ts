@@ -30,4 +30,8 @@ export class Conveyor<T> {
       { value: next, done: false } :
       { value: undefined, done: true };
   }
+
+  public wayback(n: number) {
+    this.index -= n;
+  }
 }

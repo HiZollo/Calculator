@@ -5,7 +5,7 @@ export const Messages = {
   // Lexer
   [ErrorCodes.InvalidCharacter]: (char: string) => `Invalid Character ${char}.`, 
   [ErrorCodes.InvalidOperator]: (operator: string) => `Invalid Operator ${operator}.`, 
-  [ErrorCodes.TwoDecimalPoints]: () => `There cannot be two decimal points in a number.`, 
+  [ErrorCodes.InvalidNumber]: (number: string) => `Invalid Number ${number}.`, 
 
   // Parser
   [ErrorCodes.ExtraTrailingTokens]: () => `There should not be any extra tokens in the end.`, 
@@ -26,7 +26,7 @@ export const Types = {
     // Lexer
     [ErrorCodes.InvalidCharacter]: ErrorTypes.LexerError, 
     [ErrorCodes.InvalidOperator]: ErrorTypes.LexerError, 
-    [ErrorCodes.TwoDecimalPoints]: ErrorTypes.LexerError, 
+    [ErrorCodes.InvalidNumber]: ErrorTypes.LexerError, 
   
     // Parser
     [ErrorCodes.ExtraTrailingTokens]: ErrorTypes.ParserError, 

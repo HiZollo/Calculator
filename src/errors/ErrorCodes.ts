@@ -1,8 +1,8 @@
 export enum ErrorCodes {
   // Lexer
   InvalidCharacter        = 'InvalidCharacter', 
+  InvalidNumber           = 'InvalidNumber', 
   InvalidOperator         = 'InvalidOperator', 
-  TwoDecimalPoints        = 'TwoDecimalPoints', 
 
   // Parser
   ExtraTrailingTokens     = 'ExtraTrailingTokens', 

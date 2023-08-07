@@ -5,6 +5,7 @@ import { binaryOperator, constantKeyword, functionKeyword, Token, TokenType, una
 const operators = [...unaryOperator, ...binaryOperator];
 const operatorChars = new Set([unaryOperator.map(o => o.split('')), binaryOperator.map(o => o.split(''))].flat(2));
 const keywordChars = new Set([constantKeyword.map(o => o.split('')), functionKeyword.map(o => o.split(''))].flat(2));
+const numberPatterns = [/^0x[\dA-Fa-f]+$/, /^0o[0-7]+$/, /^0b[01]+$/, /^\d+$/, /^\d+\.\d+$/, /^\d+\.$/, /^\.\d+$/];
 
 export class Lexer {
   /** 用來儲存原始資料的結構 */
@@ -109,19 +110,25 @@ export class Lexer {
   private lexNumber(char: string): boolean {
     if (!Lexer.isNumber(char)) return false;
 
-    let number = '', pointCount = 0;
+
+    let number = '';
     let next = this.conveyor.peek();
     let position = this.conveyor.position;
     while (!next.done) {
-      const temp = next.value;
-      if (!Lexer.isNumber(temp)) break;
-      if (temp === '.' && pointCount++) {
-        throw new CalcError(this.conveyor.position, ErrorCodes.TwoDecimalPoints);
-      }
+      const temp = number + next.value;
+      if (!numberPatterns.some(p => p.test(temp + '0'))) break;
 
-      number += temp;
+      number = temp;
       this.conveyor.next();
       next = this.conveyor.peek();
+    }
+
+    if (number === '.') {
+      this.conveyor.wayback(1);
+      return false;
+    }
+    if (!numberPatterns.some(p => p.test(number))) {
+      throw new CalcError(this.conveyor.position, ErrorCodes.InvalidNumber, number);
     }
 
     this.tokens.push({ type: TokenType.Number, value: number, position });
