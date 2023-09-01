@@ -1,6 +1,6 @@
 {
   "name": "@hizollo/calculator",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "A calculator written in JavaScript.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
