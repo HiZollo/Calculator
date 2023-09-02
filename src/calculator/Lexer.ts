@@ -5,7 +5,7 @@ import { binaryOperator, constantKeyword, functionKeyword, Token, TokenType, una
 const operators = [...unaryOperator, ...binaryOperator];
 const operatorChars = new Set([unaryOperator.map(o => o.split('')), binaryOperator.map(o => o.split(''))].flat(2));
 const keywordChars = new Set([constantKeyword.map(o => o.split('')), functionKeyword.map(o => o.split(''))].flat(2));
-const numberPatterns = [/^0x[\dA-Fa-f]+$/, /^0o[0-7]+$/, /^0b[01]+$/, /^\d+$/, /^\d+\.\d+$/, /^\d+\.$/, /^\.\d+$/];
+const numberPatterns = [/^0x[\da-zA-Z]+$/, /^0o[\da-zA-Z]+$/, /^0b[\da-zA-Z]+$/, /^\d+$/, /^\d+\.\d+$/, /^\d+\.$/, /^\.\d+$/];
 
 export class Lexer {
   /** 用來儲存原始資料的結構 */
@@ -127,8 +127,18 @@ export class Lexer {
       this.conveyor.wayback(1);
       return false;
     }
+    
     if (!numberPatterns.some(p => p.test(number))) {
       throw new CalcError(this.conveyor.position, ErrorCodes.InvalidNumber, number);
+    }
+    if (number.startsWith('0b') && /[^01]/.test(number.substring(2))) {
+      throw new CalcError(this.conveyor.position, ErrorCodes.PositionNotationError, 'binary', number.charAt(number.length - 1));
+    }
+    if (number.startsWith('0o') && /[^0-7]/.test(number.substring(2))) {
+      throw new CalcError(this.conveyor.position, ErrorCodes.PositionNotationError, 'octal', number.charAt(number.length - 1));
+    }
+    if (number.startsWith('0x') && /[^\da-fA-F]/.test(number.substring(2))) {
+      throw new CalcError(this.conveyor.position, ErrorCodes.PositionNotationError, 'hexadecimal', number.charAt(number.length - 1));
     }
 
     this.tokens.push({ type: TokenType.Number, value: number, position });

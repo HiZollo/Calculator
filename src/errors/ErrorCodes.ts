@@ -3,6 +3,7 @@ export enum ErrorCodes {
   InvalidCharacter        = 'InvalidCharacter', 
   InvalidNumber           = 'InvalidNumber', 
   InvalidOperator         = 'InvalidOperator', 
+  PositionNotationError   = 'PositionNotationError', 
 
   // Parser
   ExtraTrailingTokens     = 'ExtraTrailingTokens', 

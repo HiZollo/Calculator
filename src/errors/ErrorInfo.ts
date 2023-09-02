@@ -6,6 +6,7 @@ export const Messages = {
   [ErrorCodes.InvalidCharacter]: (char: string) => `Invalid Character ${char}.`, 
   [ErrorCodes.InvalidOperator]: (operator: string) => `Invalid Operator ${operator}.`, 
   [ErrorCodes.InvalidNumber]: (number: string) => `Invalid Number ${number}.`, 
+  [ErrorCodes.PositionNotationError]: (ary: 'binary' | 'octal' | 'hexadecimal', char: string) => `Invalid ${ary} character ${char}`, 
 
   // Parser
   [ErrorCodes.ExtraTrailingTokens]: () => `There should not be any extra tokens in the end.`, 
@@ -27,6 +28,7 @@ export const Types = {
     [ErrorCodes.InvalidCharacter]: ErrorTypes.LexerError, 
     [ErrorCodes.InvalidOperator]: ErrorTypes.LexerError, 
     [ErrorCodes.InvalidNumber]: ErrorTypes.LexerError, 
+    [ErrorCodes.PositionNotationError]: ErrorTypes.LexerError, 
   
     // Parser
     [ErrorCodes.ExtraTrailingTokens]: ErrorTypes.ParserError, 
