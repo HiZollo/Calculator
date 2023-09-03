@@ -110,13 +110,27 @@ export class Lexer {
   private lexNumber(char: string): boolean {
     if (!Lexer.isNumber(char)) return false;
 
-
     let number = '';
     let next = this.conveyor.peek();
     let position = this.conveyor.position;
+    let validChars = "";
     while (!next.done) {
       const temp = number + next.value;
       if (!numberPatterns.some(p => p.test(temp + '0'))) break;
+
+      validChars ||=
+        /^0b/.test(number) ? "01" :
+        /^0o/.test(number) ? "01234567" :
+        /^0x/.test(number) ? "0123456789abcdefABCDEF" : "";
+
+      if (validChars && !validChars.includes(next.value)) {
+        throw new CalcError(
+          this.conveyor.position, 
+          ErrorCodes.PositionNotationError, 
+          validChars.length === 2 ? 'binary' : validChars.length === 8 ? 'octal' : 'hexadecimal',
+          next.value
+        );
+      }
 
       number = temp;
       this.conveyor.next();
@@ -130,15 +144,6 @@ export class Lexer {
     
     if (!numberPatterns.some(p => p.test(number))) {
       throw new CalcError(this.conveyor.position, ErrorCodes.InvalidNumber, number);
-    }
-    if (number.startsWith('0b') && /[^01]/.test(number.substring(2))) {
-      throw new CalcError(this.conveyor.position, ErrorCodes.PositionNotationError, 'binary', number.charAt(number.length - 1));
-    }
-    if (number.startsWith('0o') && /[^0-7]/.test(number.substring(2))) {
-      throw new CalcError(this.conveyor.position, ErrorCodes.PositionNotationError, 'octal', number.charAt(number.length - 1));
-    }
-    if (number.startsWith('0x') && /[^\da-fA-F]/.test(number.substring(2))) {
-      throw new CalcError(this.conveyor.position, ErrorCodes.PositionNotationError, 'hexadecimal', number.charAt(number.length - 1));
     }
 
     this.tokens.push({ type: TokenType.Number, value: number, position });
