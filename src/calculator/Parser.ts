@@ -10,9 +10,12 @@ export class Parser {
   /** 儲存表達式的 stack */
   private manager: StackManager;
   
+  private parsingUnary: boolean;
+  
   constructor() {
     this.conveyor = new Conveyor();
     this.manager = new StackManager();
+    this.parsingUnary = false;
   }
 
   /** 分析單詞的語法 */
@@ -52,17 +55,17 @@ export class Parser {
 
     let exp: Expression | null = 
       this.parseParenthesis(current.value) ??
-      this.parseNumber(current.value) ??
-      this.parseConstant(current.value) ??
+      this.parseUnaryOperator(current.value) ??
       this.parseFunction(current.value) ??
-      this.parseUnaryOperator(current.value);
+      this.parseConstant(current.value) ??
+      this.parseNumber(current.value);
     if (exp === null) {
       throw new CalcError(current.value.position, ErrorCodes.InvalidToken, current.value.value);
     }
 
     // 二元運算
     current = this.conveyor.peek();
-    if (!current.done && Util.isBinaryOperator(current.value)) {
+    if (!this.parsingUnary && !current.done && Util.isBinaryOperator(current.value)) {
       this.manager.addExpression(exp);
 
       const opr: BinaryOperator = { type: TokenType.BinaryOperator, value: current.value.value, position: current.value.position };
@@ -107,25 +110,16 @@ export class Parser {
     return exp;
   }
 
-  /** 往下解析數字 */
-  private parseNumber(token: Token): NumberExpression | null {
-    if (!Util.isNumber(token)) return null;
+  /** 往下解析單元運算表達式 */
+  private parseUnaryOperator(token: Token): UnaryExpression | null {
+    if (!Util.isUnaryOperator(token)) return null;
 
-    const num = +token.value;
-    if (isNaN(num)) {
-      throw new CalcError(token.position, ErrorCodes.NotANumber, token.value);
-    }
+    this.parsingUnary = true;
     this.conveyor.next();
+    const exp = this.parseExpression();
+    this.parsingUnary = false;
 
-    return { v: num, p: token.position };
-  }
-
-  /** 往下解析常數 */
-  private parseConstant(token: Token): ConstantExpression | null {
-    if (!Util.isConstantKeyword(token)) return null;
-
-    this.conveyor.next();
-    return { c: token.value, p: token.position };
+    return { o: token, v: exp, p: token.position };
   }
 
   /**
@@ -169,14 +163,6 @@ export class Parser {
     return { f: token.value, a: funcArgs, p: token.position };
   }
 
-  /** 往下解析單元運算表達式 */
-  private parseUnaryOperator(token: Token): UnaryExpression | null {
-    if (!Util.isUnaryOperator(token)) return null;
-
-    this.conveyor.next();
-    return { o: token, v: this.parseExpression(), p: token.position };
-  }
-
   /**
    * 往下解析參數表達式
    * 
@@ -204,6 +190,27 @@ export class Parser {
     }
 
     return args;
+  }
+
+  /** 往下解析常數 */
+  private parseConstant(token: Token): ConstantExpression | null {
+    if (!Util.isConstantKeyword(token)) return null;
+
+    this.conveyor.next();
+    return { c: token.value, p: token.position };
+  }
+
+  /** 往下解析數字 */
+  private parseNumber(token: Token): NumberExpression | null {
+    if (!Util.isNumber(token)) return null;
+
+    const num = +token.value;
+    if (isNaN(num)) {
+      throw new CalcError(token.position, ErrorCodes.NotANumber, token.value);
+    }
+    this.conveyor.next();
+
+    return { v: num, p: token.position };
   }
 }
 
@@ -289,13 +296,13 @@ class StackManager {
   private getPrecedence(opr: BinaryOperator): number {
     if (opr === undefined) return -2;
     switch (opr.value) {
-      case '**': return 14;
-      case '*': case '×': case '/': case '÷': case '%': return 13;
-      case '+': case '-': return 12;
-      case '<<': case '>>': case '>>>': return 11;
-      case '&': return 8;
-      case '^': return 7;
-      case '|': return 6;
+      case '**': return 13;
+      case '*': case '×': case '/': case '÷': case '%': return 12;
+      case '+': case '-': return 11;
+      case '<<': case '>>': case '>>>': return 10;
+      case '&': return 7;
+      case '^': return 6;
+      case '|': return 5;
     }
   }
 }
