@@ -15,8 +15,10 @@
     "dist"
   ],
   "scripts": {
-    "test": "tsup --watch",
-    "build": "rm dist & tsup"
+    "test": "tsup src/test.ts && node dist/test.js",
+    "dev": "tsup src/index.ts --watch",
+    "build": "rm dist & tsup",
+    "clear": "rm dist"
   },
   "repository": {
     "type": "git",
