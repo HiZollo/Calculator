@@ -47,7 +47,7 @@ export class Parser {
   }
 
   /** 遞迴地解析語法 */
-  private parseExpression(): Expression {
+  private parseExpression(noBinary: boolean = false): Expression {
     let current = this.conveyor.peek();
     if (current.done) {
       throw new CalcError(-1, ErrorCodes.MissingExpressions);
@@ -62,6 +62,8 @@ export class Parser {
     if (exp === null) {
       throw new CalcError(current.value.position, ErrorCodes.InvalidToken, current.value.value);
     }
+
+    if (noBinary) return exp;
 
     // 二元運算
     current = this.conveyor.peek();
@@ -116,7 +118,7 @@ export class Parser {
 
     this.parsingUnary = true;
     this.conveyor.next();
-    const exp = this.parseExpression();
+    const exp = this.parseExpression(true);
     this.parsingUnary = false;
 
     return { o: token, v: exp, p: token.position };
@@ -260,7 +262,7 @@ class StackManager {
     this.barriers.pop();
   }
 
-  /** 依據優先序高於 `arg` 的暫存表達式合併 */
+  /** 依據優先序高於 `opr` 的暫存表達式合併 */
   public clearStack(opr: BinaryOperator): void {
     let current = this.operators.peek();
     while (current && this.comparePrecedence(current, opr) > 0 && this.operators.size > (this.barriers.peek() ?? 0)) {
@@ -273,19 +275,43 @@ class StackManager {
   public mergeExpression(): void {
     if (this.operators.size <= (this.barriers.peek() ?? 0)) return;
 
-    const rExp = this.expressions.pop();
-    const lExp = this.expressions.pop();
-    const opr = this.operators.pop();
-    if (!lExp || !opr || !rExp) {
-      throw new CalcError(-1, ErrorCodes.EmptyStack);
+    let oprs: BinaryOperator[] = [];
+    let exps: Expression[] = [];
+
+    let nextOpr = this.operators.peek();
+    do {
+      const opr = this.operators.pop();
+      if (!opr) {
+        throw new CalcError(-1, ErrorCodes.EmptyStack);
+      }
+      oprs.unshift(opr);
+    } while ((nextOpr = this.operators.peek()) && this.comparePrecedence(oprs[0], nextOpr) === 0);
+
+    for (let i = 0; i <= oprs.length; i++) {
+      const exp = this.expressions.pop();
+      if (!exp) {
+        throw new CalcError(-1, ErrorCodes.EmptyStack);
+      }
+      exps.unshift(exp);
     }
 
-    this.expressions.push({
-      l: lExp, 
-      o: opr, 
-      r: rExp, 
-      p: lExp.p
-    });
+    const ltr = Util.associativityOf(oprs[0]) === 'ltr';
+    while (exps.length > 1) {
+      const p = exps[0].p;
+      exps[ltr ? 'unshift' : 'push'](ltr ? {
+        l: exps.shift()!, 
+        o: oprs.shift()!, 
+        r: exps.shift()!, 
+        p
+      } : {
+        r: exps.pop()!, 
+        o: oprs.pop()!, 
+        l: exps.pop()!, 
+        p
+      });
+    }
+
+    this.expressions.push(exps[0]);
   }
 
   /** 判斷 `opr1` 相較於 `opr2` 是否有比較高的優先權，若有，則回傳正值，反之則回傳負值，若相等則回傳 0 */

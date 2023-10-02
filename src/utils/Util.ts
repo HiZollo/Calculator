@@ -35,6 +35,10 @@ export class Util {
     return opr.type === TokenType.Operator;
   }
 
+  static associativityOf(opr: BinaryOperator): 'ltr' | 'rtl' {
+    return opr.value === '**' ? 'rtl' : 'ltr';
+  }
+
 
   static isNumber(opr: Token): boolean {
     return opr.type === TokenType.Number;
