@@ -77,23 +77,26 @@ export class Lexer {
   private lexOperator(char: string): boolean {
     if (!Lexer.isOperator(char)) return false;
 
+    const position = this.conveyor.position;
+
     let candidates = operators;
-    let next = this.conveyor.peek();
     let operator = '';
-    let position = this.conveyor.position;
+    let next = this.conveyor.peek();
+
     while (!next.done) {
       const temp = operator + next.value;
       candidates = candidates.filter(o => o.startsWith(temp));
       if (!candidates.length) break;
+
       operator = temp;
       this.conveyor.next();
       next = this.conveyor.peek();
     }
 
     if (!operators.some(o => o === operator)) {
-      throw new CalcError(this.conveyor.position, ErrorCodes.InvalidOperator, operator);
+      throw new CalcError(position, ErrorCodes.InvalidOperator, operator);
     }
-    this.tokens.push({ type: TokenType.Operator, value: operator, position: position });
+    this.tokens.push({ type: TokenType.Operator, value: operator, position });
     return true;
   }
 
@@ -110,18 +113,20 @@ export class Lexer {
   private lexNumber(char: string): boolean {
     if (!Lexer.isNumber(char)) return false;
 
+    const position = this.conveyor.position;
+
     let number = '';
-    let next = this.conveyor.peek();
-    let position = this.conveyor.position;
     let validChars = "";
+    let next = this.conveyor.peek();
+
     while (!next.done) {
       const temp = number + next.value;
       if (!numberPatterns.some(p => p.test(temp + '0'))) break;
 
       validChars ||=
-        /^0b/.test(number) ? "01" :
-        /^0o/.test(number) ? "01234567" :
-        /^0x/.test(number) ? "0123456789abcdefABCDEF" : "";
+        number.startsWith('0b') ? "01" :
+        number.startsWith('0o') ? "01234567" :
+        number.startsWith('0x') ? "0123456789abcdefABCDEF" : "";
 
       if (validChars && !validChars.includes(next.value)) {
         throw new CalcError(
@@ -143,7 +148,7 @@ export class Lexer {
     }
     
     if (!numberPatterns.some(p => p.test(number))) {
-      throw new CalcError(this.conveyor.position, ErrorCodes.InvalidNumber, number);
+      throw new CalcError(position, ErrorCodes.InvalidNumber, number);
     }
 
     this.tokens.push({ type: TokenType.Number, value: number, position });
