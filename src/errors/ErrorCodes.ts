@@ -12,6 +12,7 @@ export enum ErrorCodes {
   MissingExpressions      = 'MissingExpressions', 
   MissingOpenParenthesis  = 'MissingOpenParenthesis', 
   NotANumber              = 'NotANumber', 
+  StackOverflow           = 'StackOverFlow', 
 
   // Evaluator
 

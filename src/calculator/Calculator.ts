@@ -6,9 +6,9 @@ export class Calculator {
   public parser: Parser;
   public evaluator: Evaluator;
 
-  constructor() {
+  constructor(parserOptimize: boolean = false) {
     this.lexer = new Lexer();
-    this.parser = new Parser();
+    this.parser = new Parser(parserOptimize);
     this.evaluator = new Evaluator();
   }
 

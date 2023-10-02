@@ -15,6 +15,7 @@ export const Messages = {
   [ErrorCodes.MissingExpressions]: () => `Missing expressions. Nothing to parse.`, 
   [ErrorCodes.MissingOpenParenthesis]: () => `Missing open parenthesis.`, 
   [ErrorCodes.NotANumber]: (token: string) => `${token} cannot be parsed as a number.`, 
+  [ErrorCodes.StackOverflow]: () => `Maximum call stack size exceeded.`, 
 
   // Evaluator
 
@@ -37,6 +38,7 @@ export const Types = {
     [ErrorCodes.MissingExpressions]: ErrorTypes.ParserError, 
     [ErrorCodes.MissingOpenParenthesis]: ErrorTypes.ParserError, 
     [ErrorCodes.NotANumber]: ErrorTypes.ParserError, 
+    [ErrorCodes.StackOverflow]: ErrorTypes.ParserError, 
   
     // Evaluator
 

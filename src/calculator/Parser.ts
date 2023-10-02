@@ -1,21 +1,26 @@
-import { Conveyor, Stack } from "./";
+import { Conveyor, Evaluator, Stack } from "./";
 import { BinaryOperator, ConstantExpression, Expression, FunctionExpression, NumberExpression, Token, TokenType, UnaryExpression } from "../types";
 import { Util } from "../utils";
 import { CalcError, ErrorCodes } from "../errors";
 
 export class Parser {
+  /** 是否優化輸出 */
+  public optimize: boolean;
+
   /** 用來儲存 lexer 解析後的單詞 */
   private conveyor: Conveyor<Token>;
 
   /** 儲存表達式的 stack */
   private manager: StackManager;
+
+  private evaluator: Evaluator;
   
-  private parsingUnary: boolean;
-  
-  constructor() {
+  constructor(optimize: boolean = false) {
+    this.optimize = optimize;
+
     this.conveyor = new Conveyor();
     this.manager = new StackManager();
-    this.parsingUnary = false;
+    this.evaluator = new Evaluator();
   }
 
   /** 分析單詞的語法 */
@@ -23,7 +28,16 @@ export class Parser {
     this.reset();
     this.conveyor.add(tokens);
 
-    const result = this.parseExpression();
+    let result;
+    try {
+      result = this.parseExpression();
+    } catch (e) {
+      const error = e as RangeError;
+      if (error.name === "RangeError" && error.message === "Maximum call stack size exceeded") {
+        throw new CalcError(this.conveyor.position, ErrorCodes.StackOverflow);
+      }
+      throw e;
+    }
 
     // 在語法分析結束後，stack 不應留下任何物品
     if (!this.manager.empty) {
@@ -63,28 +77,29 @@ export class Parser {
       throw new CalcError(current.value.position, ErrorCodes.InvalidToken, current.value.value);
     }
 
-    if (noBinary) return exp;
-
     // 二元運算
-    current = this.conveyor.peek();
-    if (!this.parsingUnary && !current.done && Util.isBinaryOperator(current.value)) {
-      this.manager.addExpression(exp);
+    if (!noBinary) {
+      current = this.conveyor.peek();
+      if (!current.done && Util.isBinaryOperator(current.value)) {
+        this.manager.addExpression(exp);
 
-      const opr: BinaryOperator = { type: TokenType.BinaryOperator, value: current.value.value, position: current.value.position };
-      this.manager.clearStack(opr);
-      this.manager.addOperator(opr);
-      this.conveyor.next();
+        const opr: BinaryOperator = { type: TokenType.BinaryOperator, value: current.value.value, position: current.value.position };
+        this.manager.clearStack(opr);
+        this.manager.addOperator(opr);
+        this.conveyor.next();
 
-      this.manager.addExpression(this.parseExpression());
-      this.manager.mergeExpression();
+        this.manager.addExpression(this.parseExpression());
+        this.manager.mergeExpression();
 
-      const temp = this.manager.popExpression();
-      if (!temp) {
-        throw new CalcError(-1, ErrorCodes.EmptyStack);
+        const temp = this.manager.popExpression();
+        if (!temp) {
+          throw new CalcError(-1, ErrorCodes.EmptyStack);
+        }
+        exp = temp;
       }
-      exp = temp;
     }
-    return exp;
+
+    return this.optimize ? { v: this.evaluator.evaluate(exp), p: exp.p } : exp;
   }
 
   /**
@@ -116,10 +131,8 @@ export class Parser {
   private parseUnaryOperator(token: Token): UnaryExpression | null {
     if (!Util.isUnaryOperator(token)) return null;
 
-    this.parsingUnary = true;
     this.conveyor.next();
     const exp = this.parseExpression(true);
-    this.parsingUnary = false;
 
     return { o: token, v: exp, p: token.position };
   }
