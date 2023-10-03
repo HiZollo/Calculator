@@ -1,7 +1,7 @@
 import { TokenType } from "./enums";
 
 export const parenthesis = ['(', ')'] as const;
-export const unaryOperator = ['+', '-', '~'] as const;
+export const unaryOperator = ['+', '-', '~', '√'] as const;
 export const binaryOperator = ['**', '*', '×', '/', '÷', '%', '+', '-', '<<', '>>', '>>>', '&', '^', '|'] as const;
 export const constantKeyword = ['e', 'inf', 'infinity', '∞', 'ln10', 'ln2', 'log10e', 'log2e', 'pi', 'π', 'sqrt1_2', 'sqrt2'] as const;
 export const functionKeyword = [

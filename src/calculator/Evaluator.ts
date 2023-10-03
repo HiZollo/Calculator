@@ -41,6 +41,8 @@ export class Evaluator {
         return -this.eval(exp.v);
       case '~':
         return ~this.eval(exp.v);
+      case '√':
+        return Math.sqrt(this.eval(exp.v));
     }
   }
 
