@@ -10,6 +10,7 @@ export const constants: { [key in ConstantKeywordKey]: number } = {
   'ln2'      : Math.LN2, 
   'log10e'   : Math.LOG10E, 
   'log2e'    : Math.LOG2E, 
+  'nan'      : NaN, 
   'pi'       : Math.PI, 
   'π'        : Math.PI, 
   'sqrt1_2'  : Math.SQRT1_2, 

@@ -25,8 +25,6 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
   log10: Math.log10, 
   log1p: Math.log1p, 
   log2: Math.log2, 
-  max: Math.max, 
-  min: Math.min, 
   pow: Math.pow, 
   round: Math.round, 
   sign: Math.sign, 
@@ -36,6 +34,13 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
   tan: Math.tan, 
   tanh: Math.tanh, 
   trunc: Math.trunc, 
+
+  max(...args: number[]): number {
+    return args.length ? Math.max(...args) : NaN;
+  }, 
+  min(...args: number[]): number {
+    return args.length ? Math.min(...args) : NaN;
+  }, 
 
   // statistics
   sum(...args: number[]): number {
@@ -62,7 +67,7 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
     if (args.length === 0) return NaN;
     if (args.length === 1) return args[0];
 
-    const numbers = args.map(n => BigInt(Math.floor(Math.abs(n))));
+    const numbers = args.map(n => BigInt(Math.trunc(Math.abs(n))));
     let result = _gcd(numbers[0], numbers[1]);
     for (let i = 2; i < numbers.length; i++) {
       result = _gcd(result, numbers[i]);
@@ -73,7 +78,7 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
     if (a > b) {
       [a, b] = [b, a];
     }
-    a = Math.floor(a);
+    a = Math.ceil(a);
     b = Math.floor(b);
     return Math.floor(Math.random() * (b - a + 1) + a);
   }, 
@@ -81,7 +86,7 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
     if (args.length === 0) return NaN;
     if (args.length === 1) return args[0];
 
-    const numbers = args.map(n => BigInt(Math.floor(Math.abs(n))));
+    const numbers = args.map(n => BigInt(Math.trunc(Math.abs(n))));
     let result = _lcm(numbers[0], numbers[1]);
     for (let i = 2; i < numbers.length; i++) {
       result = _lcm(result, numbers[i]);
