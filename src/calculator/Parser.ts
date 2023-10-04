@@ -298,7 +298,11 @@ class StackManager {
         throw new CalcError(-1, ErrorCodes.EmptyStack);
       }
       oprs.unshift(opr);
-    } while ((nextOpr = this.operators.peek()) && this.comparePrecedence(oprs[0], nextOpr) === 0);
+    } while (
+      this.operators.size > (this.barriers.peek() ?? 0) &&
+      (nextOpr = this.operators.peek()) && 
+      this.comparePrecedence(oprs[0], nextOpr) === 0
+    );
 
     for (let i = 0; i <= oprs.length; i++) {
       const exp = this.expressions.pop();
