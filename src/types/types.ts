@@ -5,13 +5,15 @@ export const unaryOperator = ['+', '-', '~', '√'] as const;
 export const binaryOperator = ['**', '*', '×', '/', '÷', '%', '+', '-', '<<', '>>', '>>>', '&', '^', '|'] as const;
 export const constantKeyword = ['e', 'inf', 'infinity', '∞', 'ln10', 'ln2', 'log10e', 'log2e', 'nan', 'pi', 'π', 'sqrt1_2', 'sqrt2'] as const;
 export const functionKeyword = [
-  'abs', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh', 'cbrt', 'ceil', 'clz32', 'cos', 
-  'cosh', 'exp', 'expm1', 'floor', 'fround', 'hypot', 'imul', 'log', 'log10', 'log1p', 'log2', 'max', 
-  'min', 'pow', 'random', 'round', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh', 'trunc', 
+  'abs', 'cbrt', 'clz32', 'exp', 'expm1', 'fact', 'fround', 'imul', 'irandom', 'log', 'log10', 'log1p', 'log2', 'pow', 'random', 'sqrt', 
 
-  'sum', 'sqsum', 'avg', 'stdev', 
+  'ceil', 'floor', 'round', 'sign', 'trunc', 
 
-  'fact', 'gcd', 'irandom', 'lcm', 'prod'
+  'avg', 'gcd', 'hypot', 'lcm', 'max', 'min', 'prod', 'sqsum', 'stdev', 'sum', 
+
+  'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh', 'cos', 'cosh', 'sin', 'sinh', 'tan', 'tanh', 
+
+  'date', 'day', 'year', 'hour', 'millisecond', 'minute', 'month', 'now', 'second'
 ] as const;
 
 export type ParenthesisKey = (typeof parenthesis)[number];

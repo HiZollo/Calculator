@@ -42,6 +42,35 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
     return args.length ? Math.min(...args) : NaN;
   }, 
 
+  // Date functions
+  now() {
+    return Date.now();
+  }, 
+  year() {
+    return new Date().getFullYear();
+  }, 
+  month() {
+    return new Date().getMonth() + 1;
+  }, 
+  day() {
+    return new Date().getDay() + 1;
+  }, 
+  date() {
+    return new Date().getDate();
+  }, 
+  hour() {
+    return new Date().getHours();
+  }, 
+  minute() {
+    return new Date().getMinutes();
+  }, 
+  second() {
+    return new Date().getSeconds();
+  }, 
+  millisecond() {
+    return new Date().getMilliseconds();
+  }, 
+
   // statistics
   sum(...args: number[]): number {
     return args.reduce((a, c) => a + c, 0);
