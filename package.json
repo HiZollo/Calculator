@@ -17,7 +17,7 @@
   "scripts": {
     "test": "tsup src/test.ts && node dist/test.js",
     "dev": "tsup src/index.ts --watch",
-    "build": "rm dist & tsup",
+    "build": "rm dist & tsup src/index.ts",
     "clear": "rm dist"
   },
   "repository": {
