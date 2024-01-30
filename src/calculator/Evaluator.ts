@@ -2,6 +2,8 @@ import { BinaryExpression, ConstantExpression, Expression, FunctionExpression, U
 import { Util } from "../utils";
 import { constants } from "../utils/constants";
 import { functions } from "../utils/functions";
+import { Decimal } from 'decimal.js';
+
 
 export class Evaluator {
   private exp: Expression;
@@ -16,7 +18,7 @@ export class Evaluator {
     return this.eval(this.exp);
   }
 
-  
+
   private eval(exp: Expression): number {
     if (Util.isNumberExpression(exp)) {
       return exp.v;
@@ -49,17 +51,17 @@ export class Evaluator {
   private evalBinary(exp: BinaryExpression): number {
     switch (exp.o.value) {
       case '**':
-        return this.eval(exp.l) ** this.eval(exp.r);
+        return Number(new Decimal(this.eval(exp.l)).toPower(new Decimal(this.eval(exp.r))).toFixed());
       case '*': case '×':
-        return this.eval(exp.l) * this.eval(exp.r);
+        return Number(new Decimal(this.eval(exp.l)).times(new Decimal(this.eval(exp.r))).toFixed());
       case '/': case '÷':
-        return this.eval(exp.l) / this.eval(exp.r);
+        return Number(new Decimal(this.eval(exp.l)).div(new Decimal(this.eval(exp.r))).toFixed());
       case '%':
         return this.eval(exp.l) % this.eval(exp.r);
       case '+':
-        return this.eval(exp.l) + this.eval(exp.r);
+        return Number(new Decimal(this.eval(exp.l)).plus(new Decimal(this.eval(exp.r))).toFixed());
       case '-':
-        return this.eval(exp.l) - this.eval(exp.r);
+        return Number(new Decimal(this.eval(exp.l)).minus(new Decimal(this.eval(exp.r))).toFixed());
       case '<<':
         return this.eval(exp.l) << this.eval(exp.r);
       case '>>':
