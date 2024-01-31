@@ -2,7 +2,7 @@ import { BinaryExpression, ConstantExpression, Expression, FunctionExpression, U
 import { Util } from "../utils";
 import { constants } from "../utils/constants";
 import { functions } from "../utils/functions";
-import { Decimal } from 'decimal.js';
+import { Decimal } from 'decimal.js-light';
 
 
 export class Evaluator {
