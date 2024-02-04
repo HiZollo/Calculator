@@ -2,7 +2,6 @@ import { BinaryExpression, ConstantExpression, Expression, FunctionExpression, U
 import { Util } from "../utils";
 import { constants } from "../utils/constants";
 import { functions } from "../utils/functions";
-import { Decimal } from 'decimal.js-light';
 
 
 export class Evaluator {
@@ -49,19 +48,39 @@ export class Evaluator {
   }
 
   private evalBinary(exp: BinaryExpression): number {
+
+    const n1 = this.eval(exp.l)
+    const n1l = (n1.toString().split('.')[1] || '').length
+    const n2 = this.eval(exp.r)
+    const n2l = (n2.toString().split('.')[1] || '').length
     switch (exp.o.value) {
       case '**':
-        return Number(new Decimal(this.eval(exp.l)).toPower(new Decimal(this.eval(exp.r))).toFixed());
+        return this.eval(exp.l) ** this.eval(exp.r)
       case '*': case '×':
-        return Number(new Decimal(this.eval(exp.l)).times(new Decimal(this.eval(exp.r))).toFixed());
+        return (
+          (
+            Number(n1.toString().replace('.', ''))
+            *
+            Number(n2.toString().replace('.', ''))
+          ) / Math.pow(10, (n1l + n2l))
+        )
       case '/': case '÷':
-        return Number(new Decimal(this.eval(exp.l)).div(new Decimal(this.eval(exp.r))).toFixed());
+        return (
+          (
+            Number(n1.toString().replace('.', ''))
+            /
+            Number(n2.toString().replace('.', ''))
+          ) / Math.pow(10, (n1l + n2l))
+        )
       case '%':
         return this.eval(exp.l) % this.eval(exp.r);
-      case '+':
-        return Number(new Decimal(this.eval(exp.l)).plus(new Decimal(this.eval(exp.r))).toFixed());
-      case '-':
-        return Number(new Decimal(this.eval(exp.l)).minus(new Decimal(this.eval(exp.r))).toFixed());
+      case '+': case '-':
+        const factor = Math.pow(10, Math.max(n1l, n2l));
+        if (exp.o.value == '-') {
+          return (Math.round(n1 * factor) - Math.round(n2 * factor)) / factor
+        }
+        return (Math.round(n1 * factor) + Math.round(n2 * factor)) / factor
+
       case '<<':
         return this.eval(exp.l) << this.eval(exp.r);
       case '>>':
