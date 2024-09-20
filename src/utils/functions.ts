@@ -53,7 +53,8 @@ export const functions: { [key in FunctionKeywordKey]: (...args: number[]) => nu
     return new Date().getMonth() + 1;
   }, 
   day() {
-    return new Date().getDay() + 1;
+    const day = new Date().getDay();
+    return day === 0 ? 7 : day;
   }, 
   date() {
     return new Date().getDate();
